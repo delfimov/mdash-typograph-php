@@ -193,21 +193,24 @@ class TypographBase
      * Сохранение содержимого защищенных блоков
      *
      * @param   string $text
-     * @param   bool $safe если true, то содержимое блоков будет сохранено, иначе - раскодировано.
+     * @param   bool $way если true, то содержимое блоков будет сохранено, иначе - раскодировано.
      * @return  string
      */
-    public function safe_blocks($text, $way, $show = true)
+    public function safe_blocks($text, $way)
     {
     	if (count($this->_safe_blocks))
     	{
-    		$safeType = true === $way ? "Emuravjev\Mdash\Lib::encrypt_tag(\$m[2])" : "stripslashes(Emuravjev\Mdash\Lib::decrypt_tag(\$m[2]))";
     		$safeblocks = true === $way ? $this->_safe_blocks : array_reverse($this->_safe_blocks);
        		foreach ($safeblocks as $block)
        		{
         		$text = preg_replace_callback(
         		    "/({$block['open']})(.+?)({$block['close']})/s",
-                    function ($m, $safeType) {
-                        return $m[1]. $safeType . $m[3];
+                    function ($m, $way) {
+        		        if ($way === true) {
+                            return $m[1] . Lib::encrypt_tag($m[2]) . $m[3];
+                        } else {
+        		            return $m[1] . stripslashes(Lib::decrypt_tag($m[2])) . $m[3];
+                        }
                     },
                     $text);
         	}
