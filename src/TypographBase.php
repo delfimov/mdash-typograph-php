@@ -149,7 +149,7 @@ class TypographBase
      * Добавление защищенного блока
      *
      * @param 	string $tag тэг, который должен быть защищён
-     * @return  void
+     * @return  bool
      */
     public function add_safe_tag($tag)
     {
@@ -166,7 +166,7 @@ class TypographBase
      * @param 	string $open начало блока
      * @param 	string $close конец защищенного блока
      * @param 	bool $quoted специальные символы в начале и конце блока экранированы
-     * @return  void
+     * @return  bool
      */
     public function add_safe_block($id, $open, $close, $quoted = false)
     {
@@ -205,7 +205,7 @@ class TypographBase
        		{
         		$text = preg_replace_callback(
         		    "/({$block['open']})(.+?)({$block['close']})/s",
-                    function ($m, $way) {
+                    function ($m) use ($way) {
         		        if ($way === true) {
                             return $m[1] . Lib::encrypt_tag($m[2]) . $m[3];
                         } else {
